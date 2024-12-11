@@ -1,5 +1,7 @@
 package com.rahul.productservice.services;
 
+import com.rahul.productservice.dtos.FakeStoreProductDto;
+import com.rahul.productservice.models.Category;
 import com.rahul.productservice.models.Product;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -22,9 +24,26 @@ public class FakeStoreProductService implements ProductService {
         this.restTemplate = restTemplate;
     }
 
+    // Converting the DTO into its respective model class in the service class itself is a good practice. Controller class need not be aware of DTOs.
 
     @Override
     public Product getProductDetails(Long id) {
-        return null;
+
+        FakeStoreProductDto responseDto =
+                restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
+                        FakeStoreProductDto.class);
+
+        Product product = new Product();
+
+        product.setId(responseDto.getId());
+        product.setTitle(responseDto.getTitle());
+        product.setPrice(Double.parseDouble(responseDto.getPrice()));
+
+        Category category = new Category();
+        category.setName(responseDto.getCategory());
+
+        product.setCategory(category);
+
+        return product;
     }
 }

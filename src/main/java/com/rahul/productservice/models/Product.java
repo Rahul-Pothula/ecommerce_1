@@ -1,5 +1,10 @@
 package com.rahul.productservice.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class Product {
     private Long id;
     private String title;
