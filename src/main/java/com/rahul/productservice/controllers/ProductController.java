@@ -5,9 +5,12 @@ package com.rahul.productservice.controllers;
 // objects for us and we can make it create by using @Component annotation or @RestController annotation, which is a bit special and
 // indicates that this contains the API methods.
 
+import com.rahul.productservice.dtos.CreateProductRequestDto;
+import com.rahul.productservice.models.Product;
 import com.rahul.productservice.services.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,11 +32,15 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public void getProductDetails(@PathVariable("id") Long id) {
-
+    public Product getProductDetails(@PathVariable("id") Long id) {
+        System.out.println(id);
+        return productService.getProductDetails(id);
     }
 
-    public void createProduct() {
+    // @RequestBody annotation tells the spring that whatever json it receives from the frontend, it should be converted into the object
+    // of the class speciefied right after the "@RequestBody" annotation.
+
+    public void createProduct(@RequestBody CreateProductRequestDto createProductRequestDto) {
 
     }
 }

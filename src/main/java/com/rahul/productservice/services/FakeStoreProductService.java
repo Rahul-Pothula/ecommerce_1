@@ -1,5 +1,6 @@
 package com.rahul.productservice.services;
 
+import com.rahul.productservice.dtos.FakeStoreCreateProductDto;
 import com.rahul.productservice.dtos.FakeStoreProductDto;
 import com.rahul.productservice.models.Category;
 import com.rahul.productservice.models.Product;
@@ -29,9 +30,14 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public Product getProductDetails(Long id) {
 
+        // Actually the below third party call returns a json format data, but the restTemplate takes care of it and automatically converts it into the class
+        // specified in the second parameter.
+
         FakeStoreProductDto responseDto =
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
                         FakeStoreProductDto.class);
+
+        // Here, we are creating a new Product object and not taking the advantage of the application context because we might need multiple such objects.
 
         Product product = new Product();
 
@@ -39,11 +45,24 @@ public class FakeStoreProductService implements ProductService {
         product.setTitle(responseDto.getTitle());
         product.setPrice(Double.parseDouble(responseDto.getPrice()));
 
+        System.out.println(product.getTitle());
         Category category = new Category();
         category.setName(responseDto.getCategory());
 
         product.setCategory(category);
 
         return product;
+    }
+
+    @Override
+    public void createProduct(String title, String description, String image, double price, String category) {
+        FakeStoreCreateProductDto requestDto = new FakeStoreCreateProductDto();
+        requestDto.setTitle(title);
+        requestDto.setDescription(description);
+        requestDto.setImage(image);
+        requestDto.setPrice(price);
+        requestDto.setCategory(category);
+
+        FakeStoreProductDto responseDto = restTemplate.postForObject("http://fakestoreapi.com/products", requestDto, FakeStoreProductDto.class);
     }
 }
